@@ -1,0 +1,119 @@
+OUTPUT:
+
+Please enter the initial sequence of values:
+51 29 68 90 36 40 22 59 44 99 77 60 27 83 15 75 3
+
+Traversing the tree Pre-Order:
+51 29 22 15 3 27 36 40 44 68 59 60 90 77 75 83 99 
+Traversing the tree In-Order:
+3 15 22 27 29 36 40 44 51 59 60 68 75 77 83 90 99 
+Traversing the tree Post-Order:
+3 15 27 22 44 40 36 29 60 59 75 83 77 99 90 68 51 
+
+Command? (Enter H for help.)
+h
+I - Insert a value
+D - Delete a value
+P - Find predecessor
+S - Find sucessor
+E - Exit program
+H - Display this message
+PAR - Find parent
+MIN - Find the minimum element
+MAX - Find the maximum element
+FX - Launch JavaFX application
+
+
+Command? (Enter H for help.)
+i
+Enter the value to be inserted: 88
+The new tree:
+3 15 22 27 29 36 40 44 51 59 60 68 75 77 83 88 90 99 
+
+Command? (Enter H for help.)
+g
+ERROR: Not a valid option.
+
+
+Command? (Enter H for help.)
+i
+Enter the value to be inserted: 42
+The new tree:
+3 15 22 27 29 36 40 42 44 51 59 60 68 75 77 83 88 90 99 
+
+
+Command? (Enter H for help.)
+i
+Enter the value to be inserted: 22
+ERROR: Element already exists in tree.
+
+
+Command? (Enter H for help.)
+d
+Enter the value to be deleted: 
+44
+The new tree:
+3 15 22 27 29 36 40 42 51 59 60 68 75 77 83 88 90 99 
+
+
+Command? (Enter H for help.)
+d
+Enter the value to be deleted: 
+90
+The new tree:
+3 15 22 27 29 36 40 42 51 59 60 68 75 77 83 88 99 
+
+
+Command? (Enter H for help.)
+d
+Enter the value to be deleted: 
+70
+ERROR: Element does not exists in the tree.
+
+
+Command? (Enter H for help.)
+d
+Enter the value to be deleted: 
+68
+The new tree:
+3 15 22 27 29 36 40 42 51 59 60 75 77 83 88 99 
+
+
+Command? (Enter H for help.)
+s
+Enter a value to find its successor: 
+75
+The successor of 75 is 77
+
+
+Command? (Enter H for help.)
+p
+Enter a value to find its predecessor: 
+99
+The successor of 99 is 88
+
+
+Command? (Enter H for help.)
+PAR
+Enter a value to find its parent: 
+77
+Parent of 77 is 99
+
+
+Command? (Enter H for help.)
+MIN
+
+Minimum Element: 3
+
+
+Command? (Enter H for help.)
+MAX
+
+Maximum Element: 99
+
+
+Command? (Enter H for help.)
+e
+Goodbye!
+
+Process finished with exit code 0

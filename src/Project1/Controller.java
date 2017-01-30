@@ -2,6 +2,7 @@ package Project1;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -25,8 +26,13 @@ public class Controller
     @FXML
     private TextField textFieldSequence;
 
+    @FXML
+    private Button buttonClear;
+
     ArrayList<StackPane> nodes = new ArrayList<StackPane>();
     ArrayList<Line> links = new ArrayList<Line>();
+    ArrayList<Integer> integers = new ArrayList<Integer>();
+    ArrayList<String> strings = new ArrayList<String >();
 
     private double nodeRadius = 100;
     private Color nodeColor = Color.BLUE;
@@ -34,28 +40,31 @@ public class Controller
 
     public void createBinarySearchTree() throws Exception
     {
-        String delimiter = ", ";
-        String[] treeData = textFieldSequence.getText().split(delimiter);
+        integers = Project1.parseStringToInteger(textFieldSequence.getText(), " ");
 
-//        Method method = gridPaneTreeView.getClass().getDeclaredMethod("getNumberOfRows");
-//        method.setAccessible(true);
-//        Integer rows = (Integer) method.invoke(gridPaneTreeView);
-
-        for(int i = 0; i < treeData.length; i++)
+        for(int i = 0; i < integers.size(); i++)
         {
-            nodes.add(createNode(treeData[i]));
+            nodes.add(createNode(integers.get(i)));
             positionNodes();
             connectNodes();
-            gridPaneTreeView.getChildren().add(nodes.get(i));
         }
+
+        drawTree();
     }
 
-    public StackPane createNode(String data)
+    public void clearBinarySearchTree()
+    {
+        integers.clear();
+        links.clear();
+        gridPaneTreeView.getChildren().clear();
+    }
+
+    public StackPane createNode(int data)
     {
         StackPane nodePane = new StackPane();
         Circle nodeCircle = new Circle(nodeRadius, nodeColor);
         nodeCircle.setStroke(Color.WHITE);
-        Label nodeLabel = new Label(data);
+        Label nodeLabel = new Label(Integer.toString(data));
         nodeLabel.setFont(nodeFont);
         nodeCircle.radiusProperty().bind(nodeLabel.widthProperty());
         nodePane.getChildren().addAll(nodeCircle, nodeLabel);
@@ -90,7 +99,7 @@ public class Controller
         {
             Line line = new Line();
             line.setStroke(Color.WHITE);
-            line.setStrokeWidth(5);
+            line.setStrokeWidth(2);
             links.add(line);
 
             if(i % 2 == 1 || i == 0)
@@ -106,7 +115,6 @@ public class Controller
                 //line.endYProperty().bind(circle.centerYProperty());
                 line.setEndX(nodes.get(i + 1).getLayoutX());
                 line.setEndY(nodes.get(i + 1).getLayoutY());
-                gridPaneTreeView.getChildren().add(line);
             }
             else if(i % 2 == 0 && i != 0)
             {
@@ -121,10 +129,20 @@ public class Controller
                 //line.endYProperty().bind(circle.centerYProperty());
                 line.setEndX(nodes.get(i + 1).getLayoutX());
                 line.setEndY(nodes.get(i + 1).getLayoutY());
-                gridPaneTreeView.getChildren().add(line);
             }
 
 
         }
+    }
+
+    public void drawTree()
+    {
+        buttonClear.fire();
+
+        for (Line link: links)
+            gridPaneTreeView.getChildren().add(link);
+
+        for (StackPane node: nodes)
+            gridPaneTreeView.getChildren().add(node);
     }
 }
