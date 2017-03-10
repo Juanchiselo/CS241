@@ -19,7 +19,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.Scanner;
 
 public class Main extends Application {
@@ -32,6 +31,9 @@ public class Main extends Application {
 
     // Variable for user input.
     private static String command = "";
+
+    // Digraph
+    public static Digraph<City> cityDigraph = new Digraph<City>();
 
     /**
      * Overriden Application.start method.
@@ -96,7 +98,6 @@ public class Main extends Application {
     public static void consoleVersion() throws FileNotFoundException
     {
         String userInput = "";
-        Digraph<City> cityDigraph = new Digraph<City>();
 
         String resourcesDirectory = System.getProperty("user.dir")
                 + "\\src\\Project3\\Resources\\";
@@ -113,6 +114,30 @@ public class Main extends Application {
         // Read the road.dat file.
         String roadsData = readFile(resourcesDirectory + "road.dat", ",");
         ArrayList<Road> roads = createRoads(roadsData);
+        for (Road road: roads)
+        {
+            Vertex<City> fromCity = findCityByNumber(road.getFromCity());
+            Vertex<City> toCity = findCityByNumber(road.getToCity());
+            double distance = road.getDistance();
+
+            if(!cityDigraph.insertEdge(fromCity, toCity, distance))
+                System.out.println("A road failed to be inserted.");
+        }
+
+        System.out.println(cityDigraph.getEdgeCount());
+
+        int i = 1;
+        for (Vertex<City> vertex : cityDigraph.getVertices())
+        {
+            System.out.println(i + " " + vertex.getEdges().size());
+            i++;
+        }
+
+        ArrayList<String> edgeData;
+        Vertex<City> fromCity;
+        Vertex<City> toCity;
+        double distance;
+
 
         System.out.println(
                   "\n\n======================================================================\n"
@@ -144,22 +169,104 @@ public class Main extends Application {
                 case "I":
                     System.out.print("City codes and distance: ");
                     userInput = scanner.nextLine().toUpperCase();
+                    edgeData = parseStringToStrings(userInput, "[ ]+");
+
+                    if(edgeData.size() != 3)
+                    {
+                        System.out.println("You're missing an item.");
+                        break;
+                    }
+
+
+                    fromCity = findCityByCode(edgeData.get(0));
+                    toCity = findCityByCode(edgeData.get(1));
+                    distance = Double.valueOf(edgeData.get(2));
+
+                    if(fromCity != null && toCity != null)
+                    {
+                        if(cityDigraph.insertEdge(fromCity, toCity, distance))
+                            System.out.println("The road going from "
+                                    + fromCity.getData().getCityName()
+                                    + " (" + fromCity.getData().getCityCode() + ") to "
+                                    + toCity.getData().getCityName()
+                                    + " (" + toCity.getData().getCityCode() + ") "
+                                    + "has been successfully inserted.");
+                        else
+                            System.out.println("The road going from "
+                                    + fromCity.getData().getCityName()
+                                    + " (" + fromCity.getData().getCityCode() + ") to "
+                                    + toCity.getData().getCityName()
+                                    + " (" + toCity.getData().getCityCode() + ") "
+                                    + "could not be inserted.");
+                    }
+                    else
+                        System.out.println("One of the city codes does not exist.");
+
+
+                    System.out.println(cityDigraph.getEdgeCount());
                     break;
                 case "Q":
                     System.out.print("City code: ");
                     userInput = scanner.nextLine().toUpperCase();
-                    for (Vertex<City> vertex : cityDigraph.getVertices())
-                        if(vertex.getData().getCityCode().equals(userInput))
-                            System.out.println(vertex.getData().toString());
+                    Vertex<City> city = findCityByCode(userInput);
+                    if(city != null)
+                        System.out.println(city.getData().toString());
+                    else
+                        System.out.println("The city corresponding to city code "
+                                + userInput + " does not exist.");
                     break;
                 case "R":
                     System.out.print("City codes: ");
                     userInput = scanner.nextLine().toUpperCase();
+                    edgeData = parseStringToStrings(userInput, "[ ]+");
+                    fromCity = findCityByCode(edgeData.get(0));
+                    toCity = findCityByCode(edgeData.get(1));
+
+                    if(cityDigraph.removeEdge(fromCity, toCity))
+                        System.out.println("The road going from "
+                                + fromCity.getData().getCityName()
+                                + " (" + fromCity.getData().getCityCode() + ") to "
+                                + toCity.getData().getCityName()
+                                + " (" + toCity.getData().getCityCode() + ") "
+                                + " was successfully deleted.");
+                    else
+                        System.out.println("The road going from "
+                                + fromCity.getData().getCityName()
+                                + " (" + fromCity.getData().getCityCode() + ") to "
+                                + toCity.getData().getCityName()
+                                + " (" + toCity.getData().getCityCode() + ") "
+                                + "does not exist.");
+
+
+
                     break;
                 default:
                     System.out.println("ERROR: " + command + " is not a valid option.");
             }
         }while(!command.equals("E"));
+    }
+
+    /**
+     * Finds a city from a given city code.
+     * @param cityCode - A city code used for searching a city.
+     * @return - The city if found or null if not found.
+     */
+    public static Vertex<City> findCityByCode(String cityCode)
+    {
+        for (Vertex<City> vertex : cityDigraph.getVertices())
+            if(vertex.getData().getCityCode().equals(cityCode))
+                return vertex;
+
+        return null;
+    }
+
+    public static Vertex<City> findCityByNumber(int cityNumber)
+    {
+        for (Vertex<City> vertex : cityDigraph.getVertices())
+            if(vertex.getData().getCityNumber() == cityNumber)
+                return vertex;
+
+        return null;
     }
 
     public static String readFile(String fileName, String delimiter)

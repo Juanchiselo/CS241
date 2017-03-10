@@ -38,4 +38,12 @@ public class Edge<T>
     {
         this.weight = weight;
     }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "vertex=" + vertex.toString() +
+                ", weight=" + weight +
+                '}';
+    }
 }

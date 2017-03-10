@@ -9,13 +9,9 @@ public class Vertex<T>
 {
     private T data;
     private boolean isVisted = false;
-    private ArrayList<Edge> edges;
+    private ArrayList<Edge<T>> edges;
     private Vertex<T> previousVertex;
     private double cost;
-
-    public Vertex()
-    {
-    }
 
     public Vertex(T data)
     {
@@ -51,14 +47,9 @@ public class Vertex<T>
         isVisted = false;
     }
 
-    public ArrayList<Edge> getEdges()
+    public ArrayList<Edge<T>> getEdges()
     {
         return edges;
-    }
-
-    public void setEdges(ArrayList<Edge> edges)
-    {
-        this.edges = edges;
     }
 
     public Vertex<T> getPreviousVertex()
@@ -91,19 +82,68 @@ public class Vertex<T>
 
     public boolean connect(Vertex<T> endVertex, double edgeWeight)
     {
-        // TODO: If edge exists return false. Else return true;
+        Edge<T> newEdge = new Edge<T>(endVertex, edgeWeight);
+
+
+        if(edges.isEmpty())
+        {
+//            System.out.println("Start vertex: " + this.getData().toString()
+//                    + " End Vertex: " + endVertex.getData().toString()
+//                    + " Weight: " + edgeWeight);
+            edges.add(newEdge);
+            return true;
+        }
+        else
+        {
+//            System.out.println("Start vertex: " + this.getData().toString()
+//                + " End Vertex: " + endVertex.getData().toString()
+//                + " Weight: " + edgeWeight);
+
+//            System.out.println("This: " + this.getData());
+//
+//            System.out.println("End: " + endVertex.getData().toString());
+
+//            System.out.println("Edges in this vertex: " + edges.size());
+//            System.out.println(edges);
+
+            System.out.println("Neighbors: " + getNeighbors().size());
+
+
+
+            for (Edge edge : edges)
+            {
+                System.out.println("Edge end: " + edge.getVertex().toString());
+
+                if(!edge.getVertex().equals(newEdge.getVertex()))
+                {
+                    edges.add(newEdge);
+                    System.out.println("The vertex of the edge is not equal to new edge vertex.");
+                    return true;
+                }
+                else
+                {
+                    System.out.println("This edge already exists!");
+                }
+            }
+        }
 
         return false;
     }
 
     public boolean connect(Vertex<T> endVertex)
     {
-        return false;
+        return connect(endVertex, 0);
     }
 
     public ArrayList<Vertex<T>> getNeighbors()
     {
-        ArrayList<Vertex<T>> neighbors = null;
+        ArrayList<Vertex<T>> neighbors = new ArrayList<Vertex<T>>();
+
+        if(this.hasNeighbor())
+        {
+            for (Edge<T> edge : edges)
+                neighbors.add(edge.getVertex());
+        }
 
         return neighbors;
     }
@@ -116,7 +156,7 @@ public class Vertex<T>
 
     public boolean hasNeighbor()
     {
-        return false;
+        return !edges.isEmpty();
     }
 
     public ArrayList<Vertex<T>> getUnvisitedNeighbors()

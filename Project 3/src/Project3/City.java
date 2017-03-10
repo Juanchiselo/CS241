@@ -4,7 +4,7 @@ public class City
 {
     private int cityNumber;
     private String cityCode;
-    private String cityName;
+    public String cityName;
     private int population;
     private int elevation;
 
