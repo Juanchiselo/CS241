@@ -83,4 +83,24 @@ public class City
     {
         this.elevation = elevation;
     }
+
+    @Override
+    public String toString()
+    {
+        return cityNumber + " "
+                + cityCode + " "
+                + cityName + " "
+                + population + " "
+                + elevation;
+    }
+
+    public String toStringDebug() {
+        return "City{" +
+                "cityNumber=" + cityNumber +
+                ", cityCode='" + cityCode + '\'' +
+                ", cityName='" + cityName + '\'' +
+                ", population=" + population +
+                ", elevation=" + elevation +
+                '}';
+    }
 }

@@ -19,6 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.Scanner;
 
 public class Main extends Application {
@@ -92,19 +93,26 @@ public class Main extends Application {
         }while(!command.equals("EXIT"));
     }
 
-    public static void consoleVersion() throws FileNotFoundException {
+    public static void consoleVersion() throws FileNotFoundException
+    {
         String userInput = "";
+        Digraph<City> cityDigraph = new Digraph<City>();
 
         String resourcesDirectory = System.getProperty("user.dir")
                 + "\\src\\Project3\\Resources\\";
 
 
         // Read the city.dat file.
-        String cities = readFile(resourcesDirectory + "city.dat", ",");
-
+        String citiesData = readFile(resourcesDirectory + "city.dat", ",");
+        ArrayList<City> cities = createCities(citiesData);
+        ArrayList<Vertex<City>> vertices = new ArrayList<Vertex<City>>();
+        for (int i = 0; i < cities.size(); i++)
+            vertices.add(new Vertex<City>(cities.get(i)));
+        cityDigraph.setVertices(vertices);
 
         // Read the road.dat file.
-        String roads = readFile(resourcesDirectory + "road.dat", ",");
+        String roadsData = readFile(resourcesDirectory + "road.dat", ",");
+        ArrayList<Road> roads = createRoads(roadsData);
 
         System.out.println(
                   "\n\n======================================================================\n"
@@ -140,6 +148,9 @@ public class Main extends Application {
                 case "Q":
                     System.out.print("City code: ");
                     userInput = scanner.nextLine().toUpperCase();
+                    for (Vertex<City> vertex : cityDigraph.getVertices())
+                        if(vertex.getData().getCityCode().equals(userInput))
+                            System.out.println(vertex.getData().toString());
                     break;
                 case "R":
                     System.out.print("City codes: ");
@@ -168,7 +179,7 @@ public class Main extends Application {
 
             while((line = bufferedReader.readLine()) != null)
             {
-                data = data + line + delimiter + " ";
+                data = data + line + delimiter;
             }
 
             // Always close files.
@@ -188,6 +199,68 @@ public class Main extends Application {
         }
 
         return data;
+    }
+
+    public static ArrayList<City> createCities(String data)
+    {
+        ArrayList<City> cities = new ArrayList<>();
+
+        ArrayList<String> citiesStrings = parseStringToStrings(data, ",");
+
+        for(int i = 0; i < citiesStrings.size(); i++)
+        {
+            City city = new City();
+            String cityStr = citiesStrings.get(i).trim().replaceAll("[ ]{2,}", ",");
+
+            ArrayList<String> cityString = parseStringToStrings(cityStr, ",");
+
+            for (int j = 0; j < cityString.size(); j++)
+            {
+                if (j == 0)
+                    city.setCityNumber(Integer.valueOf(cityString.get(j)));
+                else if (j == 1)
+                    city.setCityCode(cityString.get(j));
+                else if (j == 2)
+                    city.setCityName(cityString.get(j));
+                else if (j == 3)
+                    city.setPopulation(Integer.valueOf(cityString.get(j)));
+                else if (j == 4)
+                    city.setElevation(Integer.valueOf(cityString.get(j)));
+            }
+
+            cities.add(city);
+        }
+
+        return cities;
+    }
+
+    public static ArrayList<Road> createRoads(String data)
+    {
+        ArrayList<Road> roads = new ArrayList<>();
+
+        ArrayList<String> roadsStrings = parseStringToStrings(data, ",");
+
+        for(int i = 0; i < roadsStrings.size(); i++)
+        {
+            Road road = new Road();
+            String roadStr = roadsStrings.get(i).trim().replaceAll("[ ]{2,}", ",");
+
+            ArrayList<String> roadString = parseStringToStrings(roadStr, ",");
+
+            for (int j = 0; j < roadString.size(); j++)
+            {
+                if (j == 0)
+                    road.setFromCity(Integer.valueOf(roadString.get(j)));
+                else if (j == 1)
+                    road.setToCity(Integer.valueOf(roadString.get(j)));
+                else if (j == 2)
+                    road.setDistance(Integer.valueOf(roadString.get(j)));
+            }
+
+            roads.add(road);
+        }
+
+        return roads;
     }
 
     public static ArrayList<String> parseStringToStrings(String string, String delimiter)
