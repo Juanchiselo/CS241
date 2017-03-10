@@ -1,7 +1,13 @@
+/**
+ * Name: Jose J. Sandoval
+ * Class: CS241 - Data Structures and Algorithms II
+ * Created On: January 30, 2017
+ * Description: JavaFX Controller class.
+ */
+
 package Project1;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,9 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
-
-import java.awt.*;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class Controller
@@ -38,6 +41,10 @@ public class Controller
     private Color nodeColor = Color.BLUE;
     private Font nodeFont = new Font("Times New Roman", 38);
 
+    /**
+     * Creates the binary search tree from the given sequence elements.
+     * @throws Exception
+     */
     public void createBinarySearchTree() throws Exception
     {
         integers = Project1.parseStringToInteger(textFieldSequence.getText(), " ");
@@ -48,10 +55,13 @@ public class Controller
             positionNodes();
             connectNodes();
         }
-
         drawTree();
     }
 
+    /**
+     * Clears the binary search tree by clearing
+     * the GUI elements.
+     */
     public void clearBinarySearchTree()
     {
         integers.clear();
@@ -59,6 +69,11 @@ public class Controller
         gridPaneTreeView.getChildren().clear();
     }
 
+    /**
+     * Creates a binary search tree node with GUI elements.
+     * @param data - The data inside the node.
+     * @return - The node, a circle and a label, as a stackpane.
+     */
     public StackPane createNode(int data)
     {
         StackPane nodePane = new StackPane();
