@@ -10,8 +10,9 @@
 package Project3;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.PriorityQueue;
-import java.util.Stack;
+import java.util.Queue;
 
 public class Digraph<T>
 {
@@ -75,63 +76,61 @@ public class Digraph<T>
         return false;
     }
 
-    public double shortestDistance(Vertex<T> originVertex, Vertex<T> endVertex, Stack path)
+    public ArrayList<Vertex<T>> shortestDistance(Vertex<T> startVertex, Vertex<T> endVertex)
     {
-        double shortestDistance;
-        boolean done = false;
+        ArrayList<Vertex<T>> path = new ArrayList<>();
 
-        PriorityQueue<Vertex<T>> priorityQueue = new PriorityQueue<Vertex<T>>();
-        priorityQueue.add(new (originVertex, 0, null))
-
-        while(!done && !priorityQueue.isEmpty())
+        for(int i = 0; i < vertices.size(); i++)
         {
-            Vertex<T> frontEntry = priorityQueue.remove();
-            from
+            vertices.get(i).setCost(Double.POSITIVE_INFINITY);
+            vertices.get(i).setPreviousVertex(null);
         }
 
+        // Distance from source to source.
+        startVertex.setCost(0);
 
+        //PriorityQueue
+        PriorityQueue<Vertex<T>> vertexPriorityQueue = new PriorityQueue<Vertex<T>>(vertices.size(), costComparator);
+        for(Vertex<T> vertex : vertices)
+            vertexPriorityQueue.add(vertex);
 
-        priorityQueue.add(new EntryPQ(originVertex, 0, null))
-        while (!done && !priorityQueue.isEmpty())
+        while(!vertexPriorityQueue.isEmpty())
         {
-            frontEntry = priorityQueue.remove()
-            frontVertex = vertex in frontEntry
-            if (frontVertex is not visited)
+            Vertex<T> closestVector = vertexPriorityQueue.poll();
+
+            if(closestVector.getCost() == Double.POSITIVE_INFINITY)
+                break;
+
+            vertexPriorityQueue.remove(closestVector);
+
+            for(Vertex<T> neighbor : closestVector.getNeighbors())
             {
-                Mark frontVertex as visited
-                Set the cost of the path to frontVertex to the cost recorded in frontEntry
-                Set the predecessor of frontVertex to the predecessor recorded in frontEntry
-                if (frontVertex equals endVertex)
-                done = true
-else
+                double costDifference = closestVector.getCost() + neighbor.getCost();
+
+                if(costDifference < neighbor.getCost())
                 {
-                    while (frontVertex has a neighbor)
-                    {
-                        nextNeighbor = next neighbor of frontVertex
-                            weightOfEdgeToNeighbor = weight of edge to nextNeighbor
-                        if (nextNeighbor is not visited)
-                        {
-                            nextCost = weightOfEdgeToNeighbor + cost of path to frontVertex
-                            priorityQueue.add(new EntryPQ(nextNeighbor, nextCost,
-                                    frontVertex))
-                        }
-                    }
+                    neighbor.setCost(costDifference);
+                    neighbor.setPreviousVertex(closestVector);
+                    path.add(closestVector);
                 }
+
+                path.add(closestVector);
             }
         }
-// traversal ends; construct cheapest path
-
-        pathCost = cost of path to endVertex
-        path.push(endVertex)
-        vertex = endVertex
-        while (vertex has a predecessor)
-        {
-            vertex = predecessor of vertex
-            path.push(vertex)
-        }
-        return pathCost
-
-
-        return shortestDistance;
+        return path;
     }
+
+    //Comparator anonymous class implementation
+    private Comparator<Vertex<T>> costComparator;
+    {
+        costComparator = new Comparator<Vertex<T>>()
+        {
+            @Override
+            public int compare(Vertex<T> vertex, Vertex<T> nextVertex)
+            {
+                return (int) (vertex.getCost() - nextVertex.getCost());
+            }
+        };
+    }
+
 }

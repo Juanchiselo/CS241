@@ -21,10 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Main extends Application {
+public class Main {
 
-    // FXML Controller.
-    public static Controller controller = null;
 
     // Creates a scanner object to read user input.
     private static Scanner scanner = new Scanner(System.in);
@@ -35,64 +33,12 @@ public class Main extends Application {
     // Digraph
     public static Digraph<City> cityDigraph = new Digraph<City>();
 
-    /**
-     * Overriden Application.start method.
-     * Starts the JavaFX application by loading the FXML file
-     * and setting up a scene and a stage.
-     * @param primaryStage - The primary stage of the JavaFX application.
-     * @throws Exception
-     */
-    @Override
-    public void start(Stage primaryStage) throws Exception
-    {
-        // Loads the FXML file.
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Layout.fxml"));
-
-        Parent root = loader.load();
-        controller = loader.getController();
-        primaryStage.setTitle("Project 3 - Jose Juan Sandoval");
-        Scene scene = new Scene(root, 1280, 720);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
 
     public static void main(String[] args) throws InterruptedException, IOException
     {
-        do
-        {
-//            // Asks user to choose which version of the program to launch.
-//            System.out.print(
-//                      "======================================================================\n"
-//                    + "        Project 3 - Graph Data Structure - Jose Juan Sandoval\n"
-//                    + "======================================================================\n"
-//                    + "Select a version to launch:\n"
-//                    + "     CON  - Console\n"
-//                    + "     JFX  - JavaFX\n"
-//                    + "     EXIT - Exit\n"
-//                    + "Enter choice: ");
-//            command = scanner.nextLine().toUpperCase();
-            command = "CON";
+        System.out.println("Hello my baby\nHello my lady\nHello my ragtime doll");
 
-            // Executes the chosen option.
-            switch (command)
-            {
-                case "CON":
-                    consoleVersion();
-                    break;
-                case "JFX":
-                    launch(args);
-                    break;
-                case "EXIT":
-                    System.out.println("\nGoodbye!");
-                    break;
-                default:
-                    System.out.println("ERROR: " + command + " is not a valid option.");
-                    //Thread.sleep(2000);
-                    //Runtime.getRuntime().exec("clear");
-            }
-            System.out.println("\n");
-        }while(!command.equals("EXIT"));
+        //consoleVersion();
     }
 
     public static void consoleVersion() throws FileNotFoundException
@@ -124,15 +70,6 @@ public class Main extends Application {
                 System.out.println("A road failed to be inserted.");
         }
 
-        System.out.println(cityDigraph.getEdgeCount());
-
-        int i = 1;
-        for (Vertex<City> vertex : cityDigraph.getVertices())
-        {
-            System.out.println(i + " " + vertex.getEdges().size());
-            i++;
-        }
-
         ArrayList<String> edgeData;
         Vertex<City> fromCity;
         Vertex<City> toCity;
@@ -140,7 +77,7 @@ public class Main extends Application {
 
 
         System.out.println(
-                  "\n\n======================================================================\n"
+                  "======================================================================\n"
                 + "        Project 3 - Graph Data Structure - Console Version\n"
                 + "======================================================================\n");
         do
@@ -154,8 +91,24 @@ public class Main extends Application {
                 case "D":
                     System.out.print("City codes: ");
                     userInput = scanner.nextLine().toUpperCase();
+                    edgeData = parseStringToStrings(userInput, "[ ]+");
+                    fromCity = findCityByCode(edgeData.get(0));
+                    toCity = findCityByCode(edgeData.get(1));
+
+                    ArrayList<Vertex<City>> path = cityDigraph.shortestDistance(fromCity, toCity);
+
+
+                    System.out.print("The minimum distance between "
+                        + fromCity.getData().getCityName() + " and "
+                        + toCity.getData().getCityName() + " is "
+                        + " trough the route: ");
+                    for (int i = 0; i < path.size(); i++)
+                    {
+                        System.out.println(path.get(i).getData().getCityCode());
+                    }
                     break;
                 case "E":
+                    System.exit(0);
                     return;
                 case "H":
                     System.out.println(
@@ -185,12 +138,12 @@ public class Main extends Application {
                     if(fromCity != null && toCity != null)
                     {
                         if(cityDigraph.insertEdge(fromCity, toCity, distance))
-                            System.out.println("The road going from "
+                            System.out.println("You have inserted a road from "
                                     + fromCity.getData().getCityName()
                                     + " (" + fromCity.getData().getCityCode() + ") to "
                                     + toCity.getData().getCityName()
                                     + " (" + toCity.getData().getCityCode() + ") "
-                                    + "has been successfully inserted.");
+                                    + "with a distance of " + distance + ".");
                         else
                             System.out.println("The road going from "
                                     + fromCity.getData().getCityName()
@@ -202,8 +155,6 @@ public class Main extends Application {
                     else
                         System.out.println("One of the city codes does not exist.");
 
-
-                    System.out.println(cityDigraph.getEdgeCount());
                     break;
                 case "Q":
                     System.out.print("City code: ");
@@ -223,12 +174,12 @@ public class Main extends Application {
                     toCity = findCityByCode(edgeData.get(1));
 
                     if(cityDigraph.removeEdge(fromCity, toCity))
-                        System.out.println("The road going from "
+                        System.out.println("The road from "
                                 + fromCity.getData().getCityName()
-                                + " (" + fromCity.getData().getCityCode() + ") to "
+                                + " (" + fromCity.getData().getCityCode() + ") and "
                                 + toCity.getData().getCityName()
                                 + " (" + toCity.getData().getCityCode() + ") "
-                                + " was successfully deleted.");
+                                + " has been removed.");
                     else
                         System.out.println("The road going from "
                                 + fromCity.getData().getCityName()
